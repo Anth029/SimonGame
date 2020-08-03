@@ -1,0 +1,17 @@
+{
+  "name": "simon-dice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel ./src/views/pages/index.pug",
+    "build": "parcel build ./src/views/pages/index.pug"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "pug": "^3.0.0",
+    "sass": "^1.26.10"
+  }
+}
