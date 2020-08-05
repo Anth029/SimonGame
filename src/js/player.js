@@ -1,20 +1,28 @@
-import { colors, match, draw, setClass, removeClasses, oneMoreRound } from './scripts'
+import { colors, match, addCPUEvents, removeCPUEvents, oneMoreRound, main } from './scripts'
 const gameBoard = document.getElementById('colors-container')
 
 const playerPlay = []
 
 const colorSelected = (el) => {
   playerPlay.push(el)
-  clearListener()
+  removePlayerListeners()
   const wellPlayed = playerPlay.every((v, i) => v === match[i])
   if(wellPlayed){
     if (playerPlay.length === match.length){
       console.log('Ganaste!')
+      oneMoreRound()
+      addCPUEvents()
     }else {
-      addListener()
+      addPlayerListeners()
     }
   }else {
-    console.log('Perdiste!')
+    if(confirm('¡Fallaste! \n ¿Jugar otra vez?')){
+      playerPlay.splice(0)
+      addCPUEvents()
+      main()
+    }else {
+      alert('Hasta la próxima!')
+    }
   }
 
 }
@@ -38,14 +46,14 @@ const handleClick = (e) => {
   }
 }
 
-const clearListener = () => {
+const removePlayerListeners = () => {
   colors.forEach((el) => el.classList.remove('player-turn'))
   gameBoard.removeEventListener('click', handleClick, { capture: true })
 }
 
-const addListener = () => {
+const addPlayerListeners = () => {
   colors.forEach((el) => el.classList.add('player-turn'))
   gameBoard.addEventListener('click', handleClick, { capture: true })
 }
 
-export { playerPlay, addListener }
+export { playerPlay, addPlayerListeners }
