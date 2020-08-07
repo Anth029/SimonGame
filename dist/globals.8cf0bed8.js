@@ -117,197 +117,162 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../../js/player.js":[function(require,module,exports) {
+})({"../../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js":[function(require,module,exports) {
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+module.exports = _arrayLikeToArray;
+},{}],"../../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js":[function(require,module,exports) {
+var arrayLikeToArray = require("./arrayLikeToArray");
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return arrayLikeToArray(arr);
+}
+
+module.exports = _arrayWithoutHoles;
+},{"./arrayLikeToArray":"../../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js"}],"../../../node_modules/@babel/runtime/helpers/iterableToArray.js":[function(require,module,exports) {
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+module.exports = _iterableToArray;
+},{}],"../../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js":[function(require,module,exports) {
+var arrayLikeToArray = require("./arrayLikeToArray");
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+}
+
+module.exports = _unsupportedIterableToArray;
+},{"./arrayLikeToArray":"../../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js"}],"../../../node_modules/@babel/runtime/helpers/nonIterableSpread.js":[function(require,module,exports) {
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+module.exports = _nonIterableSpread;
+},{}],"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js":[function(require,module,exports) {
+var arrayWithoutHoles = require("./arrayWithoutHoles");
+
+var iterableToArray = require("./iterableToArray");
+
+var unsupportedIterableToArray = require("./unsupportedIterableToArray");
+
+var nonIterableSpread = require("./nonIterableSpread");
+
+function _toConsumableArray(arr) {
+  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+}
+
+module.exports = _toConsumableArray;
+},{"./arrayWithoutHoles":"../../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js","./iterableToArray":"../../../node_modules/@babel/runtime/helpers/iterableToArray.js","./unsupportedIterableToArray":"../../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js","./nonIterableSpread":"../../../node_modules/@babel/runtime/helpers/nonIterableSpread.js"}],"../../js/globals.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.addPlayerListeners = exports.playerPlay = void 0;
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _scripts = require("./scripts");
-
-var gameBoard = document.getElementById('colors-container');
-var playerPlay = [];
-exports.playerPlay = playerPlay;
-
-var colorSelected = function colorSelected(el) {
-  playerPlay.push(el);
-  removePlayerListeners();
-  var wellPlayed = playerPlay.every(function (v, i) {
-    return v === _scripts.match[i];
-  });
-
-  if (wellPlayed) {
-    if (playerPlay.length === _scripts.match.length) {
-      console.log('Ganaste!');
-      (0, _scripts.oneMoreRound)();
-      (0, _scripts.addCPUEvents)();
-    } else {
-      addPlayerListeners();
-    }
-  } else {
-    if (confirm('¡Fallaste! \n ¿Jugar otra vez?')) {
-      playerPlay.splice(0);
-      (0, _scripts.addCPUEvents)();
-      (0, _scripts.main)();
-    } else {
-      alert('Hasta la próxima!');
-    }
-  }
-};
-
-var handleClick = function handleClick(e) {
-  if (e.target.classList.contains('colors')) {
-    switch (e.target.classList[1]) {
-      case 'color-a':
-        colorSelected(0);
-        break;
-
-      case 'color-b':
-        colorSelected(1);
-        break;
-
-      case 'color-c':
-        colorSelected(2);
-        break;
-
-      case 'color-d':
-        colorSelected(3);
-        break;
-    }
-  }
-};
-
-var removePlayerListeners = function removePlayerListeners() {
-  _scripts.colors.forEach(function (el) {
-    return el.classList.remove('player-turn');
-  });
-
-  gameBoard.removeEventListener('click', handleClick, {
-    capture: true
-  });
-};
-
-var addPlayerListeners = function addPlayerListeners() {
-  _scripts.colors.forEach(function (el) {
-    return el.classList.add('player-turn');
-  });
-
-  gameBoard.addEventListener('click', handleClick, {
-    capture: true
-  });
-};
-
-exports.addPlayerListeners = addPlayerListeners;
-},{"./scripts":"../../js/scripts.js"}],"../../js/scripts.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.index = exports.main = exports.oneMoreRound = exports.removeCPUEvents = exports.addCPUEvents = exports.match = exports.colors = void 0;
-
-var _player = require("./player");
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var gameBoard = document.getElementById('colors-container');
 var colors = Array.from(gameBoard.children);
-exports.colors = colors;
-var index = 0;
-exports.index = index;
-var difficult = 1;
-var transitionend = [false, false];
+var cont = 0;
+var round = 0;
+var difficulty = 1;
 
 var getRandom = function getRandom() {
   return Math.floor(Math.random() * 4);
 };
 
 var match = [getRandom(), getRandom()];
-exports.match = match;
+console.log(match);
+var playerPlay = [];
 
 var oneMoreRound = function oneMoreRound() {
-  match.push.apply(match, _toConsumableArray(Array(difficult).fill(getRandom())));
+  match.push.apply(match, (0, _toConsumableArray2.default)(Array(difficulty).fill(getRandom())));
 };
 
-exports.oneMoreRound = oneMoreRound;
+var wellPlayed = function wellPlayed(clicked) {
+  switch (clicked.classList[1]) {
+    case 'color-a':
+      playerPlay.push(0);
+      break;
 
-var removeClasses = function removeClasses() {
-  colors.forEach(function (el) {
-    return el.classList.remove('active');
+    case 'color-b':
+      playerPlay.push(1);
+      break;
+
+    case 'color-c':
+      playerPlay.push(2);
+      break;
+
+    case 'color-d':
+      playerPlay.push(3);
+      break;
+  }
+
+  return playerPlay.every(function (v, i) {
+    return v === match[i];
   });
 };
 
-var addClass = function addClass() {
-  if (index < match.length) {
-    var magicNumber = match[index];
-    colors[magicNumber].classList.add('active');
-    exports.index = index = index + 1;
+var contin = function contin() {
+  if (playerPlay < match) {
+    player();
   } else {
-    exports.index = index = 0;
-
-    if (confirm('otra?')) {
-      oneMoreRound();
-      addCPUEvents();
-      main();
-    } // addPlayerListeners()
-
+    round++;
+    oneMoreRound();
+    console.log(match);
+    playerPlay.splice(0);
+    player();
   }
 };
 
-var main = function main() {
-  transitionend.fill(false);
-  addClass();
+var animate = function animate(clicked) {
+  clicked.addEventListener('animationend', function () {
+    clicked.classList.remove('active');
+    contin();
+  }, {
+    once: true
+  });
+  clicked.classList.add('active');
 };
 
-exports.main = main;
+var youLose = function youLose(round, difficulty) {
+  if (round > 0) {
+    console.log("Has llegado a la ronda ".concat(round, " en la dificultad ").concat(difficulty));
+  } else {
+    console.log('Ohh, muy mal. ¡Concéntrate!');
+  }
+};
 
-var handleCPUEvents = function handleCPUEvents() {
-  //First end
-  if (!transitionend[0]) {
-    transitionend[0] = true;
-    removeClasses();
-  } //Second end
-  else if (!transitionend[1]) {
-      transitionend[1] = true;
-      main();
+var player = function player() {
+  gameBoard.addEventListener('click', function (e) {
+    var clicked = e.target;
+
+    if (clicked.classList.contains('colors')) {
+      if (wellPlayed(clicked)) {
+        animate(clicked);
+      } else {
+        youLose(round, difficulty);
+      }
     }
-};
-
-var addCPUEvents = function addCPUEvents() {
-  gameBoard.addEventListener('transitionend', handleCPUEvents, {
-    capture: false
-  });
-  window.addEventListener('load', main, {
-    capture: false
+  }, {
+    once: true
   });
 };
 
-exports.addCPUEvents = addCPUEvents;
-
-var removeCPUEvents = function removeCPUEvents() {
-  gameBoard.removeEventListener('transitionend', handleCPUEvents, {
-    capture: false
-  });
-  window.removeEventListener('load', main, {
-    capture: false
-  });
-};
-
-exports.removeCPUEvents = removeCPUEvents;
-addCPUEvents();
-},{"./player":"../../js/player.js"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+player();
+},{"@babel/runtime/helpers/toConsumableArray":"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -335,7 +300,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49158" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50490" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -511,5 +476,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../../js/scripts.js"], null)
-//# sourceMappingURL=/scripts.56e33e51.js.map
+},{}]},{},["C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../../js/globals.js"], null)
+//# sourceMappingURL=/globals.8cf0bed8.js.map

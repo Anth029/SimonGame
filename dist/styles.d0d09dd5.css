@@ -404,12 +404,10 @@ footer {
 
 .active {
   animation-name: animate;
-  animation-duration: 1s;
+  animation-duration: 0.3s;
 }
 
 .player-turn {
-  animation-name: animate;
-  animation-duration: 1s;
   cursor: pointer;
 }
 
