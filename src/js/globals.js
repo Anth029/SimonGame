@@ -1,76 +1,96 @@
 const gameBoard = document.getElementById('colors-container')
 const colors = Array.from(gameBoard.children)
+const playButton = document.getElementById('play')
 let cont = 0
-let round = 0
-let difficulty = 1
 
-const getRandom = () => {
-  return Math.floor(Math.random() * 4)
+//Los datos que serán guardados
+const playerData = {
+  username: 'Antho',
+  round: 1,
+  difficulty: 2
 }
 
+const getRandom = () => Math.floor(Math.random() * 4)
+
+//Movimientos del jugador y del juego, para luego ser comparados
 const match = [getRandom(), getRandom()]
-console.log(match)
 const playerPlay = []
+console.log(match)
 
-const oneMoreRound = () => {
-  match.push(...Array(difficulty).fill(getRandom()))
-}
-
-const wellPlayed = (clicked) => {
-  switch(clicked.classList[1]){
-    case 'color-a': playerPlay.push(0)
-    break
-    case 'color-b': playerPlay.push(1)
-    break
-    case 'color-c': playerPlay.push(2)
-    break
-    case 'color-d': playerPlay.push(3)
-    break
-  }
-  
-  return playerPlay.every((v, i)=> v === match[i])
-}
-
-const contin = () => {
-  if(playerPlay<match) {
+const nextRound = () => {
+  const playsLeft = playerPlay<match ? true : false
+  if(playsLeft){
     player()
-  }else{
-    round++
-    oneMoreRound()
-    console.log(match)
+  }else {
+    playerData.round+=1
     playerPlay.splice(0)
+    //Las partidas avanzarán de acuerdo a la dificultad
+    for (let i = 0; i < playerData.difficulty; i++) {
+      match.push(getRandom())
+    }
+    console.log(match)
     player()
+  }
+}
+
+const goodClick = async (clicked) => {
+  const selectedByNum = colors.indexOf(clicked)
+  playerPlay.push(selectedByNum)
+  const pass = playerPlay.every((v, i)=> v === match[i])
+  console.log(clicked)
+  console.log(playerPlay)
+  console.log(pass)
+
+  if(pass){
+    await animate(clicked)
+    nextRound()
+    
+  }else {
+    youLose()
   }
 }
 
 
 const animate = (clicked) => {
-  clicked.addEventListener('animationend', ()=> {
+  return new Promise((resolve) => {
+
+    clicked.addEventListener('transitionend', ()=> {
     clicked.classList.remove('active')
-    contin()
+    resolve()
   }, {once: true})
+
   clicked.classList.add('active')
+  })
 }
 
-const youLose = (round, difficulty) => {
-  if(round>0){
-    console.log(`Has llegado a la ronda ${round} en la dificultad ${difficulty}`)
-  }else {
-    console.log('Ohh, muy mal. ¡Concéntrate!')
-  }
+const youLose = () => {
+  if(playerData.round>1){
+    alert(`Has llegado a la ronda ${playerData.round} en la dificultad ${playerData.difficulty}`)
+    start()
+  }else alert('¡Oh!, eso debió ser un error, ¿Cierto?')
 }
 
 const player = () => {
   gameBoard.addEventListener('click', (e)=> {
     const clicked = e.target
+    console.log(clicked)
     if(clicked.classList.contains('colors')){
-      if(wellPlayed(clicked)){
-        animate(clicked)
-      }else {
-        youLose(round, difficulty)
-      }
+      goodClick(clicked)
     }
   }, {once: true})
 }
 
-player()
+const start = () => {
+  playButton.removeAttribute('disabled')
+  playButton.addEventListener('click', ()=> {
+    playButton.setAttribute('disabled', 'true')
+    
+    player()
+  }, {once: true})
+}
+
+start()
+
+// window.addEventListener('click', e=> {
+//   console.log(playerPlay)
+// })
