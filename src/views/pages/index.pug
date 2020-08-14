@@ -7,5 +7,28 @@ block main
       .colors.color-c
       .colors.color-d
       .options
-        h1.title Simon Dice
-        button#play.play(disabled) Jugar
+        h1.title Simon Game
+        button#play.play(disabled) Play
+  form#form.form.form--hidden
+    fieldset.fielset
+      legend Login
+      .form__field
+        label(for="p") Name:
+        input(type="text", name="player")#p
+      .form__field
+        label(for="d") Difficulty:
+        select(name="difficulty")#d
+          option(value="normal") Normal
+          option(value="hard") Hard
+          option(value="maniac") Maniac
+      button.form__submit Save
+  table.ranking#ranking-table
+    caption Top Scores
+    thead
+      tr.ranking__head-row
+        th.ranking__title-columns Rank
+        th.ranking__title-columns Player
+        th.ranking__title-columns Difficulty
+        th.ranking__title-columns Score
+        th.ranking__title-columns Time
+    tbody#players-list

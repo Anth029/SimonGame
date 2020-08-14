@@ -1,0 +1,38 @@
+.form {
+  // background-color: thistle;
+  width: 60%;
+  // display: grid;
+
+
+  &--hidden {
+    display: none;
+  }
+
+  &__field {
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+
+    & label {
+      text-transform: uppercase;
+    }
+  }
+  
+  &__submit {
+    padding: 5px 10px;
+    background: none;
+    background-color: tomato;
+    outline: none;
+    border: none;
+    color: #fff;
+    text-transform: uppercase;
+    display: block;
+    margin: auto;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #fff;
+      color: tomato;
+    }
+  }
+}

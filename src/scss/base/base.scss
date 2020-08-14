@@ -1,20 +1,4 @@
 body {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   height: 100vh;
-  display: grid;
-  grid-template-rows: 10% 80% 10%;
-}
-
-header {
-  background-color: tomato;
-}
-
-main {
-  background-color: thistle;
-  height: 100%;
-  
-}
-
-footer {
-  background-color: salmon;
-
 }

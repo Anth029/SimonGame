@@ -909,50 +909,204 @@ function _asyncToGenerator(fn) {
 }
 
 module.exports = _asyncToGenerator;
-},{}],"../../js/globals.js":[function(require,module,exports) {
+},{}],"../../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js":[function(require,module,exports) {
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+module.exports = _arrayLikeToArray;
+},{}],"../../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js":[function(require,module,exports) {
+var arrayLikeToArray = require("./arrayLikeToArray");
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return arrayLikeToArray(arr);
+}
+
+module.exports = _arrayWithoutHoles;
+},{"./arrayLikeToArray":"../../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js"}],"../../../node_modules/@babel/runtime/helpers/iterableToArray.js":[function(require,module,exports) {
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+module.exports = _iterableToArray;
+},{}],"../../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js":[function(require,module,exports) {
+var arrayLikeToArray = require("./arrayLikeToArray");
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+}
+
+module.exports = _unsupportedIterableToArray;
+},{"./arrayLikeToArray":"../../../node_modules/@babel/runtime/helpers/arrayLikeToArray.js"}],"../../../node_modules/@babel/runtime/helpers/nonIterableSpread.js":[function(require,module,exports) {
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+module.exports = _nonIterableSpread;
+},{}],"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js":[function(require,module,exports) {
+var arrayWithoutHoles = require("./arrayWithoutHoles");
+
+var iterableToArray = require("./iterableToArray");
+
+var unsupportedIterableToArray = require("./unsupportedIterableToArray");
+
+var nonIterableSpread = require("./nonIterableSpread");
+
+function _toConsumableArray(arr) {
+  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+}
+
+module.exports = _toConsumableArray;
+},{"./arrayWithoutHoles":"../../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js","./iterableToArray":"../../../node_modules/@babel/runtime/helpers/iterableToArray.js","./unsupportedIterableToArray":"../../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js","./nonIterableSpread":"../../../node_modules/@babel/runtime/helpers/nonIterableSpread.js"}],"../../js/globals.js":[function(require,module,exports) {
 "use strict";
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var gameBoard = document.getElementById('colors-container');
 var colors = Array.from(gameBoard.children);
 var playButton = document.getElementById('play');
-var cont = 0; //Los datos que serán guardados
-
+var table = document.getElementById('ranking-table');
+var playersList = document.getElementById('players-list');
+var form = document.getElementById('form');
+var cont = 0;
 var playerData = {
-  username: 'Antho',
-  round: 1,
-  difficulty: 2
+  player: '',
+  difficulty: '',
+  score: 0,
+  time: new Date()
 };
+var testPlayers = [{
+  player: 'Momonga',
+  difficulty: 'maniac',
+  score: 1500,
+  time: new Date()
+}, {
+  player: 'Narberal',
+  difficulty: 'normal',
+  score: 100,
+  time: new Date()
+}, {
+  player: 'Momon',
+  difficulty: 'hard',
+  score: 500,
+  time: new Date()
+}, {
+  player: 'Albedo',
+  difficulty: 'normal',
+  score: 500,
+  time: new Date()
+}, {
+  player: 'Demiurge',
+  difficulty: 'maniac',
+  score: 300,
+  time: new Date()
+}]; //Busca los datos almacenados y de no encontrarlos almacena los de prueba
+
+var getRanking = function getRanking() {
+  try {
+    var dataJson = localStorage.getItem('simonRanking');
+    if (!dataJson) throw Error('Key not found');
+    return JSON.parse(dataJson);
+  } catch (error) {
+    console.log(error);
+    var orderedPlayers = testPlayers.sort(function (a, b) {
+      return b.score - a.score;
+    });
+    localStorage.setItem('simonRanking', JSON.stringify(orderedPlayers));
+
+    var _dataJson = localStorage.getItem('simonRanking');
+
+    return JSON.parse(_dataJson);
+  }
+};
+
+var setRanking = function setRanking() {
+  var savedPlayers = getRanking();
+  var allPlayers = [].concat((0, _toConsumableArray2.default)(savedPlayers), [playerData]);
+  var orderedPlayers = allPlayers.sort(function (a, b) {
+    return b.score - a.score;
+  });
+  var topPlayers = orderedPlayers.slice(0, 10);
+  localStorage.setItem('simonRanking', JSON.stringify(topPlayers));
+};
+
+var showRanking = function showRanking() {
+  var players = getRanking();
+  var fragment = document.createDocumentFragment();
+  players.forEach(function (v, i) {
+    var tr = document.createElement('tr');
+    var tdRank = document.createElement('td');
+    var tdPlayer = document.createElement('td');
+    var tdDiff = document.createElement('td');
+    var tdScore = document.createElement('td');
+    var tdTime = document.createElement('td');
+    tdRank.textContent = "#".concat(i + 1);
+    tdPlayer.textContent = v.player;
+    tdDiff.textContent = v.difficulty;
+    tdScore.textContent = v.score;
+    tdTime.textContent = v.time;
+    tr.append(tdRank, tdPlayer, tdDiff, tdScore, tdTime);
+    fragment.appendChild(tr);
+  });
+  playersList.innerHTML = '';
+  playersList.appendChild(fragment);
+};
+
+showRanking();
 
 var getRandom = function getRandom() {
   return Math.floor(Math.random() * 4);
-}; //Movimientos del jugador y del juego, para luego ser comparados
+};
 
-
-var match = [getRandom(), getRandom()];
+var match = [];
 var playerPlay = [];
-console.log(match);
 
 var nextRound = function nextRound() {
   var playsLeft = playerPlay < match ? true : false;
 
   if (playsLeft) {
-    player();
+    addClickEvent();
   } else {
-    playerData.round += 1;
-    playerPlay.splice(0); //Las partidas avanzarán de acuerdo a la dificultad
+    switch (playerData.difficulty) {
+      case 'normal':
+        playerData.score += 50;
+        match.push(getRandom());
+        break;
 
-    for (var i = 0; i < playerData.difficulty; i++) {
-      match.push(getRandom());
+      case 'hard':
+        playerData.score += 100;
+        match.push(getRandom());
+        match.push(getRandom());
+        break;
+
+      case 'maniac':
+        playerData.score += 150;
+        match.push(getRandom());
+        match.push(getRandom());
+        match.push(getRandom());
+        break;
     }
 
+    playerPlay.splice(0);
     console.log(match);
-    player();
+    addClickEvent();
   }
 };
 
@@ -968,27 +1122,24 @@ var goodClick = /*#__PURE__*/function () {
             pass = playerPlay.every(function (v, i) {
               return v === match[i];
             });
-            console.log(clicked);
-            console.log(playerPlay);
-            console.log(pass);
 
             if (!pass) {
-              _context.next = 12;
+              _context.next = 9;
               break;
             }
 
-            _context.next = 9;
+            _context.next = 6;
             return animate(clicked);
 
-          case 9:
+          case 6:
             nextRound();
-            _context.next = 13;
+            _context.next = 10;
             break;
 
-          case 12:
+          case 9:
             youLose();
 
-          case 13:
+          case 10:
           case "end":
             return _context.stop();
         }
@@ -1014,38 +1165,62 @@ var animate = function animate(clicked) {
 };
 
 var youLose = function youLose() {
-  if (playerData.round > 1) {
-    alert("Has llegado a la ronda ".concat(playerData.round, " en la dificultad ").concat(playerData.difficulty));
-    start();
-  } else alert('¡Oh!, eso debió ser un error, ¿Cierto?');
+  setRanking();
+  showRanking();
+  start();
 };
 
-var player = function player() {
-  gameBoard.addEventListener('click', function (e) {
-    var clicked = e.target;
+var handleClick = function handleClick(e) {
+  var clicked = e.target;
 
-    if (clicked.classList.contains('colors')) {
-      goodClick(clicked);
-    }
-  }, {
-    once: true
-  });
+  if (clicked.classList.contains('colors')) {
+    goodClick(clicked);
+    removeClickEvent();
+  }
+};
+
+var addClickEvent = function addClickEvent() {
+  gameBoard.addEventListener('click', handleClick);
+};
+
+var removeClickEvent = function removeClickEvent() {
+  gameBoard.removeEventListener('click', handleClick);
 };
 
 var start = function start() {
   playButton.removeAttribute('disabled');
   playButton.addEventListener('click', function () {
+    playerData.score = 0;
+    playerPlay.splice(0);
+    match.splice(0);
+    match.push(getRandom(), getRandom());
+    console.log(match);
     playButton.setAttribute('disabled', 'true');
-    player();
+    addClickEvent();
   }, {
     once: true
   });
 };
 
-start(); // window.addEventListener('click', e=> {
-//   console.log(playerPlay)
-// })
-},{"@babel/runtime/regenerator":"../../../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../../../node_modules/@babel/runtime/helpers/asyncToGenerator.js"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var formEvent = function formEvent() {
+  form.classList.remove('form--hidden');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    playerData.player = form.player.value;
+    playerData.difficulty = form.difficulty.value;
+    sessionStorage.setItem('simonPlayer', form.player.value);
+    form.classList.add('form--hidden');
+    start();
+  });
+};
+
+if (sessionStorage.getItem('simonPlayer')) {
+  playerData.player = sessionStorage.getItem('simonPlayer');
+  start();
+} else {
+  formEvent();
+}
+},{"@babel/runtime/regenerator":"../../../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../../../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/toConsumableArray":"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -1073,7 +1248,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49160" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51165" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
