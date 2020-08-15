@@ -12,7 +12,11 @@
 .colors {
   width: 90%;
   height: 90%;
-  transition: filter 0.1s;
+  transition: filter 150ms;
+
+  &--active {
+    filter: brightness(150%);
+  }
 }
 
 .color-a {
@@ -57,10 +61,6 @@
     text-transform: uppercase;
   }
   
-}
-
-.active {
-  filter: brightness(150%);
 }
 
 .player-turn {

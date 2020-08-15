@@ -979,76 +979,130 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var gameBoard = document.getElementById('colors-container');
 var colors = Array.from(gameBoard.children);
 var playButton = document.getElementById('play');
 var table = document.getElementById('ranking-table');
 var playersList = document.getElementById('players-list');
 var form = document.getElementById('form');
-var cont = 0;
-var playerData = {
-  player: '',
-  difficulty: '',
-  score: 0,
-  time: new Date()
+var match = [];
+var playerPlay = [];
+
+var getRandom = function getRandom() {
+  return Math.floor(Math.random() * 4);
 };
+
 var testPlayers = [{
-  player: 'Momonga',
+  player: 'xXJuanXx',
   difficulty: 'maniac',
   score: 1500,
-  time: new Date()
+  time: new Date('2020-07-13T04:43:09')
 }, {
-  player: 'Narberal',
+  player: '_Alex_',
+  difficulty: 'hard',
+  score: 800,
+  time: new Date('2020-11-13T04:43:09')
+}, {
+  player: 'Bot96',
+  difficulty: 'normal',
+  score: 500,
+  time: new Date('2020-10-13T04:43:09')
+}, {
+  player: 'Player123',
+  difficulty: 'hard',
+  score: 300,
+  time: new Date('2020-01-13T04:43:09')
+}, {
+  player: 'Vegetta777',
+  difficulty: 'maniac',
+  score: 150,
+  time: new Date('2020-02-13T04:43:09')
+}, {
+  player: 'Clementine',
   difficulty: 'normal',
   score: 100,
-  time: new Date()
-}, {
-  player: 'Momon',
-  difficulty: 'hard',
-  score: 500,
-  time: new Date()
+  time: new Date('2020-11-13T04:43:09')
 }, {
   player: 'Albedo',
-  difficulty: 'normal',
-  score: 500,
-  time: new Date()
+  difficulty: 'hard',
+  score: 100,
+  time: new Date('2020-07-13T04:43:09')
 }, {
-  player: 'Demiurge',
-  difficulty: 'maniac',
-  score: 300,
-  time: new Date()
-}]; //Busca los datos almacenados y de no encontrarlos almacena los de prueba
+  player: 'Nabe',
+  difficulty: 'normal',
+  score: 50,
+  time: new Date('2020-04-17T10:43:09')
+}, {
+  player: 'Shalltear Bloodfallen',
+  difficulty: 'normal',
+  score: 50,
+  time: new Date('2020-08-13T01:00:09')
+}, {
+  player: 'OoLeiaoO',
+  difficulty: 'normal',
+  score: 50,
+  time: new Date('2020-01-13T04:43:09')
+}];
 
-var getRanking = function getRanking() {
-  try {
-    var dataJson = localStorage.getItem('simonRanking');
-    if (!dataJson) throw Error('Key not found');
-    return JSON.parse(dataJson);
-  } catch (error) {
-    console.log(error);
-    var orderedPlayers = testPlayers.sort(function (a, b) {
-      return b.score - a.score;
-    });
-    localStorage.setItem('simonRanking', JSON.stringify(orderedPlayers));
+var setPlayerData = function setPlayerData(player, diff) {
+  var playerData = getPlayerData();
+  playerData.player = player;
+  playerData.difficulty = diff;
+  sessionStorage.setItem('simonPlayer', JSON.stringify(playerData));
+};
 
-    var _dataJson = localStorage.getItem('simonRanking');
+var sumScore = function sumScore(score) {
+  var playerData = getPlayerData();
+  if (score) playerData.score += score;else playerData.score = 0;
+  sessionStorage.setItem('simonPlayer', JSON.stringify(playerData));
+};
 
-    return JSON.parse(_dataJson);
+var getPlayerData = function getPlayerData() {
+  var playerData = sessionStorage.getItem('simonPlayer');
+  if (playerData) return JSON.parse(playerData);else {
+    var newSession = {
+      player: '',
+      difficulty: '',
+      score: 0,
+      time: new Date()
+    };
+    sessionStorage.setItem('simonPlayer', JSON.stringify(newSession));
+    return newSession;
   }
 };
 
 var setRanking = function setRanking() {
-  var savedPlayers = getRanking();
+  var savedPlayers = getSavedRanking();
+  var playerData = getPlayerData();
+  playerData.time = new Date();
   var allPlayers = [].concat((0, _toConsumableArray2.default)(savedPlayers), [playerData]);
   var orderedPlayers = allPlayers.sort(function (a, b) {
     return b.score - a.score;
   });
   var topPlayers = orderedPlayers.slice(0, 10);
   localStorage.setItem('simonRanking', JSON.stringify(topPlayers));
+}; //Busca los datos almacenados y de no encontrarlos almacena los de prueba
+
+
+var getSavedRanking = function getSavedRanking() {
+  var dataJson = localStorage.getItem('simonRanking');
+  if (dataJson) return JSON.parse(dataJson);else {
+    var orderedPlayers = testPlayers.sort(function (a, b) {
+      return b.score - a.score;
+    });
+    localStorage.setItem('simonRanking', JSON.stringify(orderedPlayers));
+    return orderedPlayers;
+  }
 };
 
 var showRanking = function showRanking() {
-  var players = getRanking();
+  var players = getSavedRanking();
   var fragment = document.createDocumentFragment();
   players.forEach(function (v, i) {
     var tr = document.createElement('tr');
@@ -1062,6 +1116,12 @@ var showRanking = function showRanking() {
     tdDiff.textContent = v.difficulty;
     tdScore.textContent = v.score;
     tdTime.textContent = v.time;
+    tr.classList.add('ranking__body--rows');
+    tdRank.classList.add('ranking__body');
+    tdPlayer.classList.add('ranking__body', 'ranking__body--bold');
+    tdDiff.classList.add('ranking__body');
+    tdScore.classList.add('ranking__body', 'ranking__body--bold');
+    tdTime.classList.add('ranking__body');
     tr.append(tdRank, tdPlayer, tdDiff, tdScore, tdTime);
     fragment.appendChild(tr);
   });
@@ -1071,51 +1131,133 @@ var showRanking = function showRanking() {
 
 showRanking();
 
-var getRandom = function getRandom() {
-  return Math.floor(Math.random() * 4);
-};
-
-var match = [];
-var playerPlay = [];
-
-var nextRound = function nextRound() {
-  var playsLeft = playerPlay < match ? true : false;
-
-  if (playsLeft) {
-    addClickEvent();
-  } else {
-    switch (playerData.difficulty) {
-      case 'normal':
-        playerData.score += 50;
-        match.push(getRandom());
-        break;
-
-      case 'hard':
-        playerData.score += 100;
-        match.push(getRandom());
-        match.push(getRandom());
-        break;
-
-      case 'maniac':
-        playerData.score += 150;
-        match.push(getRandom());
-        match.push(getRandom());
-        match.push(getRandom());
-        break;
-    }
-
-    playerPlay.splice(0);
-    console.log(match);
-    addClickEvent();
-  }
-};
-
-var goodClick = /*#__PURE__*/function () {
-  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(clicked) {
-    var selectedByNum, pass;
+var clear = /*#__PURE__*/function () {
+  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(what) {
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
+          case 0:
+            if (!(what === 'round')) {
+              _context.next = 7;
+              break;
+            }
+
+            playerPlay.splice(0);
+            _context.next = 4;
+            return animateCPU();
+
+          case 4:
+            addClickEvent();
+            _context.next = 8;
+            break;
+
+          case 7:
+            if (what === 'match') {
+              sumScore();
+              playerPlay.splice(0);
+              match.splice(0);
+            }
+
+          case 8:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function clear(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+var nextRound = function nextRound() {
+  var playsLeft = playerPlay < match ? true : false;
+  if (playsLeft) addClickEvent();else {
+    switch (getPlayerData().difficulty) {
+      case 'hard':
+        match.push(getRandom(), getRandom());
+        sumScore(100);
+        break;
+
+      case 'maniac':
+        match.push(getRandom(), getRandom(), getRandom());
+        sumScore(150);
+        break;
+
+      case 'normal':
+      default:
+        match.push(getRandom());
+        sumScore(50);
+    }
+
+    clear('round');
+  }
+};
+
+var animateCPU = /*#__PURE__*/function () {
+  var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+    var _iterator, _step, v;
+
+    return _regenerator.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _iterator = _createForOfIteratorHelper(match);
+            _context2.prev = 1;
+
+            _iterator.s();
+
+          case 3:
+            if ((_step = _iterator.n()).done) {
+              _context2.next = 9;
+              break;
+            }
+
+            v = _step.value;
+            _context2.next = 7;
+            return Promise.resolve(animate(v));
+
+          case 7:
+            _context2.next = 3;
+            break;
+
+          case 9:
+            _context2.next = 14;
+            break;
+
+          case 11:
+            _context2.prev = 11;
+            _context2.t0 = _context2["catch"](1);
+
+            _iterator.e(_context2.t0);
+
+          case 14:
+            _context2.prev = 14;
+
+            _iterator.f();
+
+            return _context2.finish(14);
+
+          case 17:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, null, [[1, 11, 14, 17]]);
+  }));
+
+  return function animateCPU() {
+    return _ref2.apply(this, arguments);
+  };
+}();
+
+var goodClick = /*#__PURE__*/function () {
+  var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(clicked) {
+    var selectedByNum, pass;
+    return _regenerator.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             selectedByNum = colors.indexOf(clicked);
             playerPlay.push(selectedByNum);
@@ -1124,16 +1266,16 @@ var goodClick = /*#__PURE__*/function () {
             });
 
             if (!pass) {
-              _context.next = 9;
+              _context3.next = 9;
               break;
             }
 
-            _context.next = 6;
-            return animate(clicked);
+            _context3.next = 6;
+            return animate(selectedByNum);
 
           case 6:
             nextRound();
-            _context.next = 10;
+            _context3.next = 10;
             break;
 
           case 9:
@@ -1141,26 +1283,26 @@ var goodClick = /*#__PURE__*/function () {
 
           case 10:
           case "end":
-            return _context.stop();
+            return _context3.stop();
         }
       }
-    }, _callee);
+    }, _callee3);
   }));
 
-  return function goodClick(_x) {
-    return _ref.apply(this, arguments);
+  return function goodClick(_x2) {
+    return _ref3.apply(this, arguments);
   };
 }();
 
-var animate = function animate(clicked) {
+var animate = function animate(index) {
   return new Promise(function (resolve) {
-    clicked.addEventListener('transitionend', function () {
-      clicked.classList.remove('active');
-      resolve();
+    colors[index].addEventListener('transitionend', function () {
+      colors[index].classList.remove('colors--active');
+      setTimeout(resolve, 200);
     }, {
       once: true
     });
-    clicked.classList.add('active');
+    colors[index].classList.add('colors--active');
   });
 };
 
@@ -1189,15 +1331,42 @@ var removeClickEvent = function removeClickEvent() {
 
 var start = function start() {
   playButton.removeAttribute('disabled');
-  playButton.addEventListener('click', function () {
-    playerData.score = 0;
-    playerPlay.splice(0);
-    match.splice(0);
-    match.push(getRandom(), getRandom());
-    console.log(match);
-    playButton.setAttribute('disabled', 'true');
-    addClickEvent();
-  }, {
+  playButton.addEventListener('click', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+    return _regenerator.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            clear('match');
+            _context4.t0 = getPlayerData().difficulty;
+            _context4.next = _context4.t0 === 'hard' ? 4 : _context4.t0 === 'maniac' ? 6 : _context4.t0 === 'normal' ? 8 : 8;
+            break;
+
+          case 4:
+            match.push(getRandom(), getRandom());
+            return _context4.abrupt("break", 9);
+
+          case 6:
+            match.push(getRandom(), getRandom(), getRandom());
+            return _context4.abrupt("break", 9);
+
+          case 8:
+            match.push(getRandom());
+
+          case 9:
+            _context4.next = 11;
+            return animateCPU();
+
+          case 11:
+            playButton.setAttribute('disabled', 'true');
+            addClickEvent();
+
+          case 13:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  })), {
     once: true
   });
 };
@@ -1206,20 +1375,19 @@ var formEvent = function formEvent() {
   form.classList.remove('form--hidden');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    playerData.player = form.player.value;
-    playerData.difficulty = form.difficulty.value;
-    sessionStorage.setItem('simonPlayer', form.player.value);
-    form.classList.add('form--hidden');
+    setPlayerData(e.target.player.value, e.target.difficulty.value);
+    e.target.classList.add('form--hidden');
     start();
   });
 };
 
 if (sessionStorage.getItem('simonPlayer')) {
-  playerData.player = sessionStorage.getItem('simonPlayer');
   start();
 } else {
   formEvent();
-}
+} //Bienvenida con el form
+//Mensajes al perder o la animacion al score
+//dev dependencies parcel no está :O
 },{"@babel/runtime/regenerator":"../../../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../../../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/toConsumableArray":"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -1248,7 +1416,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51165" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49227" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

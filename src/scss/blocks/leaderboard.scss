@@ -4,29 +4,27 @@
   border-radius: 2px;
   padding: 3px;
 
-  &__head-row {
-    padding: 10px;
-  }
-
-  &__title-columns {
+  &__head {
     padding: 10px;
     font-weight: normal;
     color: #fff;
-    background-color: rgb(255, 101, 101);
+
+    &--row {
+      background-color: rgb(255, 101, 101);
+    }
   }
 
-  td {
+  &__body {
     padding: 5px;
     border: 1px solid orange;
+
+    &--bold {
+      font-weight: bold;
+    }
+
+    &--rows:nth-child(odd) {
+      background-color: rgb(252, 247, 218);
+    }
   }
 
-}
-
-tr:nth-of-type(even) {
-  background-color: rgb(252, 247, 218);
-}
-
-td:nth-of-type(2),
-td:nth-of-type(4) {
-  font-weight: bold;
 }
