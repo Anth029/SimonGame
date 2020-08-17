@@ -987,10 +987,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 var gameBoard = document.getElementById('colors-container');
 var colors = Array.from(gameBoard.children);
-var playButton = document.getElementById('play');
+var form = document.getElementById('ingame-form');
 var table = document.getElementById('ranking-table');
 var playersList = document.getElementById('players-list');
-var form = document.getElementById('form');
 var match = [];
 var playerPlay = [];
 
@@ -998,51 +997,56 @@ var getRandom = function getRandom() {
   return Math.floor(Math.random() * 4);
 };
 
+var logout = document.getElementById('logout');
+logout.addEventListener('click', function (e) {
+  sessionStorage.removeItem('simonPlayer');
+  location.reload();
+});
 var testPlayers = [{
   player: 'xXJuanXx',
   difficulty: 'maniac',
   score: 1500,
-  time: new Date('2020-07-13T04:43:09')
+  time: new Date('2020-07-06T12:43:09')
 }, {
   player: '_Alex_',
   difficulty: 'hard',
   score: 800,
-  time: new Date('2020-11-13T04:43:09')
+  time: new Date('2020-12-13T13:33:09')
 }, {
   player: 'Bot96',
   difficulty: 'normal',
   score: 500,
-  time: new Date('2020-10-13T04:43:09')
+  time: new Date('2020-10-28T17:50:09')
 }, {
   player: 'Player123',
   difficulty: 'hard',
   score: 300,
-  time: new Date('2020-01-13T04:43:09')
+  time: new Date('2020-01-15T22:07:09')
 }, {
   player: 'Vegetta777',
   difficulty: 'maniac',
   score: 150,
-  time: new Date('2020-02-13T04:43:09')
+  time: new Date('2020-02-03T10:30:09')
 }, {
   player: 'Clementine',
   difficulty: 'normal',
   score: 100,
-  time: new Date('2020-11-13T04:43:09')
+  time: new Date('2020-11-14T04:43:09')
 }, {
   player: 'Albedo',
   difficulty: 'hard',
   score: 100,
-  time: new Date('2020-07-13T04:43:09')
+  time: new Date('2020-07-25T08:40:09')
 }, {
   player: 'Nabe',
   difficulty: 'normal',
   score: 50,
-  time: new Date('2020-04-17T10:43:09')
+  time: new Date('2020-04-17T10:00:09')
 }, {
-  player: 'Shalltear Bloodfallen',
+  player: 'Shalltear',
   difficulty: 'normal',
   score: 50,
-  time: new Date('2020-08-13T01:00:09')
+  time: new Date('2020-08-01T01:09:09')
 }, {
   player: 'OoLeiaoO',
   difficulty: 'normal',
@@ -1050,10 +1054,11 @@ var testPlayers = [{
   time: new Date('2020-01-13T04:43:09')
 }];
 
-var setPlayerData = function setPlayerData(player, diff) {
+var setPlayerData = function setPlayerData(player, diff, time) {
   var playerData = getPlayerData();
-  playerData.player = player;
-  playerData.difficulty = diff;
+  if (player) playerData.player = player;
+  if (diff) playerData.difficulty = diff;
+  if (time) playerData.time = time;
   sessionStorage.setItem('simonPlayer', JSON.stringify(playerData));
 };
 
@@ -1070,7 +1075,7 @@ var getPlayerData = function getPlayerData() {
       player: '',
       difficulty: '',
       score: 0,
-      time: new Date()
+      time: ''
     };
     sessionStorage.setItem('simonPlayer', JSON.stringify(newSession));
     return newSession;
@@ -1080,7 +1085,6 @@ var getPlayerData = function getPlayerData() {
 var setRanking = function setRanking() {
   var savedPlayers = getSavedRanking();
   var playerData = getPlayerData();
-  playerData.time = new Date();
   var allPlayers = [].concat((0, _toConsumableArray2.default)(savedPlayers), [playerData]);
   var orderedPlayers = allPlayers.sort(function (a, b) {
     return b.score - a.score;
@@ -1104,6 +1108,20 @@ var getSavedRanking = function getSavedRanking() {
 var showRanking = function showRanking() {
   var players = getSavedRanking();
   var fragment = document.createDocumentFragment();
+  var timeOptions = {
+    hour: 'numeric',
+    minute: '2-digit'
+  };
+  var dateOptions = {
+    month: "short",
+    day: "numeric"
+  };
+  var playerDate;
+
+  if (sessionStorage.getItem('simonPlayer')) {
+    playerDate = getPlayerData().time;
+  }
+
   players.forEach(function (v, i) {
     var tr = document.createElement('tr');
     var tdRank = document.createElement('td');
@@ -1115,12 +1133,13 @@ var showRanking = function showRanking() {
     tdPlayer.textContent = v.player;
     tdDiff.textContent = v.difficulty;
     tdScore.textContent = v.score;
-    tdTime.textContent = v.time;
+    tdTime.textContent = "".concat(new Date(v.time).toLocaleTimeString(undefined, timeOptions), " ").concat(new Date(v.time).toLocaleDateString(undefined, dateOptions));
     tr.classList.add('ranking__body--rows');
+    if (playerDate === v.time) tr.classList.add('active-row');
     tdRank.classList.add('ranking__body');
-    tdPlayer.classList.add('ranking__body', 'ranking__body--bold');
+    tdPlayer.classList.add('ranking__body');
     tdDiff.classList.add('ranking__body');
-    tdScore.classList.add('ranking__body', 'ranking__body--bold');
+    tdScore.classList.add('ranking__body');
     tdTime.classList.add('ranking__body');
     tr.append(tdRank, tdPlayer, tdDiff, tdScore, tdTime);
     fragment.appendChild(tr);
@@ -1147,7 +1166,7 @@ var clear = /*#__PURE__*/function () {
             return animateCPU();
 
           case 4:
-            addClickEvent();
+            clickListener();
             _context.next = 8;
             break;
 
@@ -1173,8 +1192,13 @@ var clear = /*#__PURE__*/function () {
 
 var nextRound = function nextRound() {
   var playsLeft = playerPlay < match ? true : false;
-  if (playsLeft) addClickEvent();else {
+  if (playsLeft) clickListener();else {
     switch (getPlayerData().difficulty) {
+      case 'normal':
+        match.push(getRandom());
+        sumScore(50);
+        break;
+
       case 'hard':
         match.push(getRandom(), getRandom());
         sumScore(100);
@@ -1183,12 +1207,6 @@ var nextRound = function nextRound() {
       case 'maniac':
         match.push(getRandom(), getRandom(), getRandom());
         sumScore(150);
-        break;
-
-      case 'normal':
-      default:
-        match.push(getRandom());
-        sumScore(50);
     }
 
     clear('round');
@@ -1297,41 +1315,41 @@ var goodClick = /*#__PURE__*/function () {
 var animate = function animate(index) {
   return new Promise(function (resolve) {
     colors[index].addEventListener('transitionend', function () {
-      colors[index].classList.remove('colors--active');
+      colors[index].classList.remove('game__color--active');
       setTimeout(resolve, 200);
     }, {
       once: true
     });
-    colors[index].classList.add('colors--active');
+    colors[index].classList.add('game__color--active');
   });
 };
 
 var youLose = function youLose() {
+  setPlayerData(undefined, undefined, new Date());
   setRanking();
   showRanking();
-  start();
+  play();
 };
 
-var handleClick = function handleClick(e) {
-  var clicked = e.target;
+var clickListener = function clickListener() {
+  var handleClick = function handleClick(e) {
+    var clicked = e.target;
 
-  if (clicked.classList.contains('colors')) {
-    goodClick(clicked);
-    removeClickEvent();
-  }
-};
+    if (clicked.classList.contains('game__color')) {
+      goodClick(clicked);
+      removeClickEvent();
+    }
+  };
 
-var addClickEvent = function addClickEvent() {
+  var removeClickEvent = function removeClickEvent() {
+    return gameBoard.removeEventListener('click', handleClick);
+  };
+
   gameBoard.addEventListener('click', handleClick);
 };
 
-var removeClickEvent = function removeClickEvent() {
-  gameBoard.removeEventListener('click', handleClick);
-};
-
-var start = function start() {
-  playButton.removeAttribute('disabled');
-  playButton.addEventListener('click', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+var start = /*#__PURE__*/function () {
+  var _ref4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -1357,36 +1375,117 @@ var start = function start() {
             return animateCPU();
 
           case 11:
-            playButton.setAttribute('disabled', 'true');
-            addClickEvent();
+            clickListener();
 
-          case 13:
+          case 12:
           case "end":
             return _context4.stop();
         }
       }
     }, _callee4);
-  })), {
+  }));
+
+  return function start() {
+    return _ref4.apply(this, arguments);
+  };
+}();
+
+var play = function play() {
+  form.difficulty.value = getPlayerData().difficulty;
+  form.submit.textContent = 'PLAY';
+  form.submit.removeAttribute('disabled');
+  form.difficulty.forEach(function (r) {
+    return r.removeAttribute('disabled');
+  });
+
+  var handleChange = function handleChange() {
+    var diff = form.difficulty.value;
+
+    if (diff === 'hard' || diff === 'maniac') {
+      setPlayerData(undefined, diff);
+    } else {
+      form.difficulty.value = 'normal';
+      setPlayerData(undefined, 'normal');
+    }
+  };
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    form.submit.setAttribute('disabled', 'true');
+    form.difficulty.forEach(function (r) {
+      return r.setAttribute('disabled', 'true');
+    });
+    removeChangeEvent();
+    start();
+  }, {
+    once: true
+  });
+  form.addEventListener('change', handleChange);
+
+  var removeChangeEvent = function removeChangeEvent() {
+    return form.removeEventListener('change', handleChange);
+  };
+};
+
+var userRegister = function userRegister() {
+  form.reset();
+  var validate = {
+    name: "",
+    diff: ""
+  };
+
+  var handleChange = function handleChange() {
+    var playerName = form.player.value;
+    var diff = form.difficulty.value;
+
+    if (playerName) {
+      if (playerName.length < 10) {
+        validate.name = playerName;
+      } else {
+        console.log('Name too long');
+        validate.name = '';
+      }
+    } else {
+      validate.name = '';
+    }
+
+    if (diff === 'normal' || diff === 'hard' || diff === 'maniac') {
+      validate.diff = diff;
+    } else {
+      validate.diff = '';
+    }
+
+    if (validate.name && validate.diff) {
+      form.submit.removeAttribute('disabled');
+    } else {
+      form.submit.setAttribute('disabled', 'true');
+    }
+  };
+
+  var handleSubmit = function handleSubmit(e) {
+    e.preventDefault();
+    setPlayerData(validate.name, validate.diff);
+    form.children[0].innerHTML = "<p class=\"form__player-name\">".concat(getPlayerData().player, "<p>");
+    removeChangeEvent();
+    play();
+  };
+
+  var removeChangeEvent = function removeChangeEvent() {
+    return form.removeEventListener('change', handleChange);
+  };
+
+  form.addEventListener('change', handleChange);
+  form.addEventListener('submit', handleSubmit, {
     once: true
   });
 };
 
-var formEvent = function formEvent() {
-  form.classList.remove('form--hidden');
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    setPlayerData(e.target.player.value, e.target.difficulty.value);
-    e.target.classList.add('form--hidden');
-    start();
-  });
-};
-
 if (sessionStorage.getItem('simonPlayer')) {
-  start();
+  form.children[0].innerHTML = "<p class=\"form__player-name\">".concat(getPlayerData().player, "<p>");
+  play();
 } else {
-  formEvent();
-} //Bienvenida con el form
-//Mensajes al perder o la animacion al score
+  userRegister();
+} //Mensajes al perder o la animacion al score
 //dev dependencies parcel no está :O
 },{"@babel/runtime/regenerator":"../../../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../../../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/toConsumableArray":"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -1416,7 +1515,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49227" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49262" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

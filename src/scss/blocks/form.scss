@@ -1,38 +1,91 @@
 .form {
-  // background-color: thistle;
-  width: 60%;
-  // display: grid;
+  height: 100%;
+  display: grid;
+  align-content: space-between;
 
-
-  &--hidden {
-    display: none;
-  }
-
-  &__field {
-    padding: 1em;
-    display: flex;
-    justify-content: space-between;
-
-    & label {
-      text-transform: uppercase;
-    }
+  &__player-name {
+    text-align: center;
+    color: peachpuff;
+    margin-bottom: 0;
+    font-size: 1em;
   }
   
-  &__submit {
-    padding: 5px 10px;
-    background: none;
-    background-color: tomato;
-    outline: none;
-    border: none;
-    color: #fff;
-    text-transform: uppercase;
-    display: block;
-    margin: auto;
+  &__label {
+    color: #eee;
+    text-transform: lowercase;
+    margin-right: 3px;
+  }
 
-    &:hover {
-      cursor: pointer;
-      background-color: #fff;
-      color: tomato;
+  &__input {
+    color: #eee;
+    width: 65%;
+    border: none;
+    background: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  &__radio-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+  
+  &__radio {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    border: 2px solid;
+    border-radius: 10%;
+    cursor: pointer;
+    transition: background-color 300ms, color 300ms;
+    font-size: 8px;
+    padding: 5px;
+    
+    &:checked {
+      color: #fff;
     }
+
+    &:disabled {
+      border-color: grey;
+      color: grey;
+    }
+  
+    &--a {
+      border-color: $gameboard-color-1;
+      color: $gameboard-color-1;
+      &::before {
+        content: 'NORMAL';
+      }
+      &:checked {
+        background-color: $gameboard-color-1;
+      }
+    }
+  
+    &--b {
+      border-color: $gameboard-color-3;
+      color: $gameboard-color-3;
+      &::before {
+        content: 'HARD';
+      }
+      &:checked {
+        background-color: $gameboard-color-3;
+      }
+    }
+  
+    &--c {
+      border-color: $gameboard-color-2;
+      color: $gameboard-color-2;
+      &::before {
+        content: 'MANIAC';
+      }
+      &:checked {
+        background-color: $gameboard-color-2;
+      }
+    }
+  }
+
+  &__submit {
+    width: 50%;
+    justify-self: center;
   }
 }

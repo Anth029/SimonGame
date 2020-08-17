@@ -1,34 +1,30 @@
 extends ../templates/template.pug
 block main
   section.app#app
-    .colors-container#colors-container
-      .colors.color-a
-      .colors.color-b
-      .colors.color-c
-      .colors.color-d
-      .options
-        h1.title Simon Game
-        button#play.play(disabled) Play
-  form#form.form.form--hidden
-    fieldset.fielset
-      legend Login
-      .form__field
-        label(for="p") Name:
-        input(type="text", name="player")#p
-      .form__field
-        label(for="d") Difficulty:
-        select(name="difficulty")#d
-          option(value="normal") Normal
-          option(value="hard") Hard
-          option(value="maniac") Maniac
-      button.form__submit Save
-  table.ranking#ranking-table
-    caption Top Scores
-    thead
-      tr.ranking__head--row
-        th.ranking__head Rank
-        th.ranking__head Player
-        th.ranking__head Difficulty
-        th.ranking__head Score
-        th.ranking__head Time
-    tbody#players-list
+    button#logout logout
+    .game#colors-container
+      .game__color.game__color--a
+      .game__color.game__color--b
+      .game__color.game__color--c
+      .game__color.game__color--d
+      .game__options
+        h1.game__title Simon
+        form.form#ingame-form
+          div
+            label(for="p").form__label Player:
+            input(type="text", name="player" require).form__input#p
+          .form__radio-container
+            input(type='radio', name='difficulty', value='normal').form__radio.form__radio--a
+            input(type='radio', name='difficulty', value='hard').form__radio.form__radio--b
+            input(type='radio', name='difficulty', value='maniac').form__radio.form__radio--c
+          button(name="submit" disabled).form__submit Save
+    table.ranking#ranking-table
+      caption Top Scores
+      thead
+        tr.ranking__head--row
+          th.ranking__head Rank
+          th.ranking__head Player
+          th.ranking__head Difficulty
+          th.ranking__head Score
+          th.ranking__head Time
+      tbody#players-list

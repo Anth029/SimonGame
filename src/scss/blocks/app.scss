@@ -1,68 +1,82 @@
-.colors-container {
-  width: 300px;
-  height: 300px;
+.game {
+  width: 400px;
+  height: 400px;
   background-color: #000;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  border-radius: 50%;
+  gap: 1.5em;
+  border-radius: $gameboard-border-r2;
   position: relative;
-}
 
-.colors {
-  width: 90%;
-  height: 90%;
-  transition: filter 150ms;
+  &__color {
+    width: 90%;
+    height: 90%;
+    transition: filter 150ms;
 
-  &--active {
-    filter: brightness(150%);
+    &--a {
+      background-color: $gameboard-color-1;
+      border-top-left-radius: $gameboard-border-r3;
+      border-top-right-radius: $gameboard-border-r1;
+      border-bottom-left-radius: $gameboard-border-r1;
+      place-self: end;
+    }
+
+    &--b {
+      background-color: $gameboard-color-2;
+      border-top-right-radius: $gameboard-border-r3;
+      border-top-left-radius: $gameboard-border-r1;
+      border-bottom-right-radius: $gameboard-border-r1;
+      place-self: end start;
+    }
+
+    &--c {
+      background-color: $gameboard-color-3;
+      border-bottom-left-radius: $gameboard-border-r3;
+      border-top-left-radius: $gameboard-border-r1;
+      border-bottom-right-radius: $gameboard-border-r1;
+      place-self: start end;
+    }
+
+    &--d {
+      background-color: $gameboard-color-4;
+      border-bottom-right-radius: $gameboard-border-r3;
+      border-bottom-left-radius: $gameboard-border-r1;
+      border-top-right-radius: $gameboard-border-r1;
+      place-self: start;
+    }
+
+    &--active {
+      filter: brightness(200%);
+    }
   }
-}
 
-.color-a {
-  background-color: #30c782;
-  border-top-left-radius: 100%;
-  place-self: end;
-}
+  &__options {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    padding: 15px;
+    background-color: #000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: $gameboard-border-r2;
+    display: grid;
+    grid-template-rows: 30% 1fr;
+    justify-content: center;
+    place-items: center;
+  }
 
-.color-b {
-  background-color: #d43128;
-  border-top-right-radius: 100%;
-  place-self: end start;
-}
-
-.color-c {
-  background-color: #e8cf3f;
-  border-bottom-left-radius: 100%;
-  place-self: start end;
-}
-
-.color-d {
-  background-color: #1797d8;
-  border-bottom-right-radius: 100%;
-  place-self: start;
-}
-
-.options {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  background-color: #000;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 100%;
-  display: grid;
-  place-items: center;
-
-  & .title {
+  &__title {
+    margin: 0;
     color: #fff;
-    font-size: 1.2em;
+    font-size: 2em;
     text-transform: uppercase;
   }
-  
+
 }
 
 .player-turn {
   cursor: pointer;
 }
+
+

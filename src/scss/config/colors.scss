@@ -1,0 +1,29 @@
+:root {
+  --font-color-1: rgb(255, 255, 255);
+  --font-color-2: rgb(0, 0, 0);
+
+  --gameboard-color-1: #52d3aa ;
+  --gameboard-color-2: #ff3c32;
+  --gameboard-color-3:#fba905;
+  --gameboard-color-4: #3f95ea;
+
+  // --leaderboard-bg-color: #2f2519;
+  --leaderboard-head-color: transparent;
+  --leaderboard-body-color-1: #4a3f3577;
+  --leaderboard-body-color-2: #fa7d0977;
+  --leaderboard-active-color: #24192f;
+}
+
+$font-color-1: var(--font-color-1);
+$font-color-2: var(--font-color-2);
+
+$gameboard-color-1: var(--gameboard-color-1);
+$gameboard-color-2: var(--gameboard-color-2);
+$gameboard-color-3: var(--gameboard-color-3);
+$gameboard-color-4: var(--gameboard-color-4);
+
+$leaderboard-bg-color: var(--leaderboard-bg-color);
+$leaderboard-head-color: var(--leaderboard-head-color);
+$leaderboard-body-color-1: var(--leaderboard-body-color-1);
+$leaderboard-body-color-2: var(--leaderboard-body-color-2);
+$leaderboard-active-color: var(--leaderboard-active-color);

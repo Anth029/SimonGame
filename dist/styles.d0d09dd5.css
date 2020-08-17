@@ -1,3 +1,22 @@
+:root {
+  --font-color-1: rgb(255, 255, 255);
+  --font-color-2: rgb(0, 0, 0);
+  --gameboard-color-1: #52d3aa ;
+  --gameboard-color-2: #ff3c32;
+  --gameboard-color-3:#fba905;
+  --gameboard-color-4: #3f95ea;
+  --leaderboard-head-color: transparent;
+  --leaderboard-body-color-1: #4a3f3577;
+  --leaderboard-body-color-2: #fa7d0977;
+  --leaderboard-active-color: #24192f;
+}
+
+:root {
+  --gameboard-border-r1: 5%;
+  --gameboard-border-r2: 50%;
+  --gameboard-border-r3: 100%;
+}
+
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 /* Document
    ========================================================================== */
@@ -353,65 +372,71 @@ body {
   background-color: #ccc;
 }
 
-.colors-container {
-  width: 300px;
-  height: 300px;
+.game {
+  width: 400px;
+  height: 400px;
   background-color: #000;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  border-radius: 50%;
+  gap: 1.5em;
+  border-radius: var(--gameboard-border-r2);
   position: relative;
 }
-
-.colors {
+.game__color {
   width: 90%;
   height: 90%;
   transition: filter 150ms;
 }
-.colors--active {
-  filter: brightness(150%);
-}
-
-.color-a {
-  background-color: #30c782;
-  border-top-left-radius: 100%;
+.game__color--a {
+  background-color: var(--gameboard-color-1);
+  border-top-left-radius: var(--gameboard-border-r3);
+  border-top-right-radius: var(--gameboard-border-r1);
+  border-bottom-left-radius: var(--gameboard-border-r1);
   place-self: end;
 }
-
-.color-b {
-  background-color: #d43128;
-  border-top-right-radius: 100%;
+.game__color--b {
+  background-color: var(--gameboard-color-2);
+  border-top-right-radius: var(--gameboard-border-r3);
+  border-top-left-radius: var(--gameboard-border-r1);
+  border-bottom-right-radius: var(--gameboard-border-r1);
   place-self: end start;
 }
-
-.color-c {
-  background-color: #e8cf3f;
-  border-bottom-left-radius: 100%;
+.game__color--c {
+  background-color: var(--gameboard-color-3);
+  border-bottom-left-radius: var(--gameboard-border-r3);
+  border-top-left-radius: var(--gameboard-border-r1);
+  border-bottom-right-radius: var(--gameboard-border-r1);
   place-self: start end;
 }
-
-.color-d {
-  background-color: #1797d8;
-  border-bottom-right-radius: 100%;
+.game__color--d {
+  background-color: var(--gameboard-color-4);
+  border-bottom-right-radius: var(--gameboard-border-r3);
+  border-bottom-left-radius: var(--gameboard-border-r1);
+  border-top-right-radius: var(--gameboard-border-r1);
   place-self: start;
 }
-
-.options {
+.game__color--active {
+  filter: brightness(200%);
+}
+.game__options {
   position: absolute;
-  width: 150px;
-  height: 150px;
+  width: 50%;
+  height: 50%;
+  padding: 15px;
   background-color: #000;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 100%;
+  border-radius: var(--gameboard-border-r2);
   display: grid;
+  grid-template-rows: 30% 1fr;
+  justify-content: center;
   place-items: center;
 }
-.options .title {
+.game__title {
+  margin: 0;
   color: #fff;
-  font-size: 1.2em;
+  font-size: 2em;
   text-transform: uppercase;
 }
 
@@ -420,59 +445,126 @@ body {
 }
 
 .form {
-  width: 60%;
+  height: 100%;
+  display: grid;
+  align-content: space-between;
 }
-.form--hidden {
-  display: none;
+.form__player-name {
+  text-align: center;
+  color: peachpuff;
+  margin-bottom: 0;
+  font-size: 1em;
 }
-.form__field {
-  padding: 1em;
-  display: flex;
-  justify-content: space-between;
+.form__label {
+  color: #eee;
+  text-transform: lowercase;
+  margin-right: 3px;
 }
-.form__field label {
-  text-transform: uppercase;
+.form__input {
+  color: #eee;
+  width: 65%;
+  border: none;
+  background: none;
+  border-bottom: 1px solid #eee;
+}
+.form__radio-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+.form__radio {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  border: 2px solid;
+  border-radius: 10%;
+  cursor: pointer;
+  transition: background-color 300ms, color 300ms;
+  font-size: 8px;
+  padding: 5px;
+}
+.form__radio:checked {
+  color: #fff;
+}
+.form__radio:disabled {
+  border-color: grey;
+  color: grey;
+}
+.form__radio--a {
+  border-color: var(--gameboard-color-1);
+  color: var(--gameboard-color-1);
+}
+.form__radio--a::before {
+  content: "NORMAL";
+}
+.form__radio--a:checked {
+  background-color: var(--gameboard-color-1);
+}
+.form__radio--b {
+  border-color: var(--gameboard-color-3);
+  color: var(--gameboard-color-3);
+}
+.form__radio--b::before {
+  content: "HARD";
+}
+.form__radio--b:checked {
+  background-color: var(--gameboard-color-3);
+}
+.form__radio--c {
+  border-color: var(--gameboard-color-2);
+  color: var(--gameboard-color-2);
+}
+.form__radio--c::before {
+  content: "MANIAC";
+}
+.form__radio--c:checked {
+  background-color: var(--gameboard-color-2);
 }
 .form__submit {
-  padding: 5px 10px;
-  background: none;
-  background-color: tomato;
-  outline: none;
-  border: none;
-  color: #fff;
-  text-transform: uppercase;
-  display: block;
-  margin: auto;
-}
-.form__submit:hover {
-  cursor: pointer;
-  background-color: #fff;
-  color: tomato;
+  width: 50%;
+  justify-self: center;
 }
 
 .ranking {
-  background-color: #fff;
-  border: 1px solid #000;
-  border-radius: 2px;
   padding: 3px;
+  border-radius: 0.5em;
+  color: var(--font-color-1);
+  border-collapse: collapse;
+  background-image: linear-gradient(90deg, #432371 0%, #faad7a 100%);
 }
 .ranking__head {
-  padding: 10px;
+  padding: 5px 15px;
   font-weight: normal;
-  color: #fff;
-}
-.ranking__head--row {
-  background-color: #ff6565;
+  padding: 1em;
 }
 .ranking__body {
   padding: 5px;
-  border: 1px solid orange;
 }
-.ranking__body--bold {
+.ranking__body:nth-child(2) {
   font-weight: bold;
 }
+.ranking__body:nth-child(3) {
+  text-align: center;
+}
+.ranking__body:nth-child(4) {
+  font-weight: bold;
+  text-align: end;
+}
 .ranking__body--rows:nth-child(odd) {
-  background-color: #fcf7da;
+  background-color: var(--leaderboard-body-color-1);
+}
+.ranking__body--rows:nth-child(even) {
+  background-color: var(--leaderboard-body-color-2);
+}
+
+.active-row {
+  animation: recent-score 1s infinite;
+}
+
+@keyframes recent-score {
+  50% {
+    background-color: var(--leaderboard-active-color);
+  }
 }
 
 /*# sourceMappingURL=/styles.d0d09dd5.css.map */

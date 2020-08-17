@@ -1,0 +1,9 @@
+:root {
+  --gameboard-border-r1: 5%;//color-corners
+  --gameboard-border-r2: 50%;//container&options
+  --gameboard-border-r3: 100%;//color-corners
+}
+
+$gameboard-border-r1: var(--gameboard-border-r1);
+$gameboard-border-r2: var(--gameboard-border-r2);
+$gameboard-border-r3: var(--gameboard-border-r3);
