@@ -7,6 +7,7 @@
     text-align: center;
     color: peachpuff;
     margin-bottom: 0;
+    margin-top: 0;
     font-size: 1em;
   }
   
@@ -18,7 +19,7 @@
 
   &__input {
     color: #eee;
-    width: 65%;
+    width: 60%;
     border: none;
     background: none;
     border-bottom: 1px solid #eee;
@@ -40,6 +41,7 @@
     transition: background-color 300ms, color 300ms;
     font-size: 8px;
     padding: 5px;
+    text-align: center;
     
     &:checked {
       color: #fff;
@@ -87,5 +89,13 @@
   &__submit {
     width: 50%;
     justify-self: center;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    &:disabled {
+      color: gray;
+      cursor: initial;
+    }
   }
 }

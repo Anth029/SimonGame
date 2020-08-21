@@ -8,7 +8,7 @@
   --leaderboard-head-color: transparent;
   --leaderboard-body-color-1: #4a3f3577;
   --leaderboard-body-color-2: #fa7d0977;
-  --leaderboard-active-color: #24192f;
+  --leaderboard-active-color: #c7b302;
 }
 
 :root {
@@ -369,12 +369,33 @@ template {
 body {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   height: 100vh;
-  background-color: #ccc;
+  background-image: linear-gradient(90deg, #00ff88 0%, #61efff 100%);
+}
+
+.logout {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #000;
+  color: #fff;
+}
+.logout--disabled {
+  display: none;
+}
+.logout:hover {
+  outline: #fff 2px solid;
 }
 
 .game {
-  width: 400px;
-  height: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 320px;
+  height: 320px;
   background-color: #000;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -385,7 +406,7 @@ body {
 .game__color {
   width: 90%;
   height: 90%;
-  transition: filter 150ms;
+  transition: background-color 200ms, transform 100ms;
 }
 .game__color--a {
   background-color: var(--gameboard-color-1);
@@ -416,7 +437,13 @@ body {
   place-self: start;
 }
 .game__color--active {
-  filter: brightness(200%);
+  background-color: #fff;
+}
+.game__color--player-turn {
+  cursor: pointer;
+}
+.game__color--player-turn:active {
+  transform: scale(0.9);
 }
 .game__options {
   position: absolute;
@@ -436,12 +463,8 @@ body {
 .game__title {
   margin: 0;
   color: #fff;
-  font-size: 2em;
+  font-size: 1.2em;
   text-transform: uppercase;
-}
-
-.player-turn {
-  cursor: pointer;
 }
 
 .form {
@@ -453,6 +476,7 @@ body {
   text-align: center;
   color: peachpuff;
   margin-bottom: 0;
+  margin-top: 0;
   font-size: 1em;
 }
 .form__label {
@@ -462,7 +486,7 @@ body {
 }
 .form__input {
   color: #eee;
-  width: 65%;
+  width: 60%;
   border: none;
   background: none;
   border-bottom: 1px solid #eee;
@@ -482,6 +506,7 @@ body {
   transition: background-color 300ms, color 300ms;
   font-size: 8px;
   padding: 5px;
+  text-align: center;
 }
 .form__radio:checked {
   color: #fff;
@@ -523,19 +548,43 @@ body {
 .form__submit {
   width: 50%;
   justify-self: center;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+.form__submit:disabled {
+  color: gray;
+  cursor: initial;
 }
 
 .ranking {
   padding: 3px;
-  border-radius: 0.5em;
   color: var(--font-color-1);
   border-collapse: collapse;
   background-image: linear-gradient(90deg, #432371 0%, #faad7a 100%);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  border-radius: 10px;
 }
 .ranking__head {
-  padding: 5px 15px;
+  padding: 0.8em;
   font-weight: normal;
-  padding: 1em;
+}
+.ranking__head:nth-child(2) {
+  font-weight: bold;
+}
+.ranking__head:nth-child(4) {
+  font-weight: bold;
+}
+.ranking__head:nth-last-child(1) {
+  display: none;
+}
+@media screen and (min-width: 600px) {
+  .ranking__head:nth-last-child(1) {
+    display: table-cell;
+  }
 }
 .ranking__body {
   padding: 5px;
@@ -549,6 +598,15 @@ body {
 .ranking__body:nth-child(4) {
   font-weight: bold;
   text-align: end;
+  padding-right: 1em;
+}
+.ranking__body:nth-last-child(1) {
+  display: none;
+}
+@media screen and (min-width: 600px) {
+  .ranking__body:nth-last-child(1) {
+    display: table-cell;
+  }
 }
 .ranking__body--rows:nth-child(odd) {
   background-color: var(--leaderboard-body-color-1);

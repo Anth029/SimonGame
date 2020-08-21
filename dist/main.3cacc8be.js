@@ -968,7 +968,22 @@ function _toConsumableArray(arr) {
 }
 
 module.exports = _toConsumableArray;
-},{"./arrayWithoutHoles":"../../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js","./iterableToArray":"../../../node_modules/@babel/runtime/helpers/iterableToArray.js","./unsupportedIterableToArray":"../../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js","./nonIterableSpread":"../../../node_modules/@babel/runtime/helpers/nonIterableSpread.js"}],"../../js/globals.js":[function(require,module,exports) {
+},{"./arrayWithoutHoles":"../../../node_modules/@babel/runtime/helpers/arrayWithoutHoles.js","./iterableToArray":"../../../node_modules/@babel/runtime/helpers/iterableToArray.js","./unsupportedIterableToArray":"../../../node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js","./nonIterableSpread":"../../../node_modules/@babel/runtime/helpers/nonIterableSpread.js"}],"../../assets/C.wav":[function(require,module,exports) {
+module.exports = "/C.27c784bc.wav";
+},{}],"../../assets/B.wav":[function(require,module,exports) {
+module.exports = "/B.924b5fee.wav";
+},{}],"../../assets/D.wav":[function(require,module,exports) {
+module.exports = "/D.b65ca965.wav";
+},{}],"../../assets/A.wav":[function(require,module,exports) {
+module.exports = "/A.1e630603.wav";
+},{}],"../../assets/*.wav":[function(require,module,exports) {
+module.exports = {
+  "C": require("./C.wav"),
+  "B": require("./B.wav"),
+  "D": require("./D.wav"),
+  "A": require("./A.wav")
+};
+},{"./C.wav":"../../assets/C.wav","./B.wav":"../../assets/B.wav","./D.wav":"../../assets/D.wav","./A.wav":"../../assets/A.wav"}],"../../js/main.js":[function(require,module,exports) {
 "use strict";
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
@@ -976,6 +991,8 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
+var _ = require("../assets/*.wav");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -988,7 +1005,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 var gameBoard = document.getElementById('colors-container');
 var colors = Array.from(gameBoard.children);
 var form = document.getElementById('ingame-form');
-var table = document.getElementById('ranking-table');
 var playersList = document.getElementById('players-list');
 var match = [];
 var playerPlay = [];
@@ -998,10 +1014,35 @@ var getRandom = function getRandom() {
 };
 
 var logout = document.getElementById('logout');
-logout.addEventListener('click', function (e) {
-  sessionStorage.removeItem('simonPlayer');
-  location.reload();
-});
+var audioA = new Audio(_.A);
+var audioB = new Audio(_.B);
+var audioC = new Audio(_.C);
+var audioD = new Audio(_.D);
+
+var audioPlay = function audioPlay(colorClicked) {
+  switch (colorClicked) {
+    case 0:
+      audioA.currentTime = 0;
+      audioA.play();
+      break;
+
+    case 1:
+      audioB.currentTime = 0;
+      audioB.play();
+      break;
+
+    case 2:
+      audioC.currentTime = 0;
+      audioC.play();
+      break;
+
+    case 3:
+      audioD.currentTime = 0;
+      audioD.play();
+      break;
+  }
+};
+
 var testPlayers = [{
   player: 'xXJuanXx',
   difficulty: 'maniac',
@@ -1148,8 +1189,6 @@ var showRanking = function showRanking() {
   playersList.appendChild(fragment);
 };
 
-showRanking();
-
 var clear = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(what) {
     return _regenerator.default.wrap(function _callee$(_context) {
@@ -1157,27 +1196,36 @@ var clear = /*#__PURE__*/function () {
         switch (_context.prev = _context.next) {
           case 0:
             if (!(what === 'round')) {
-              _context.next = 7;
+              _context.next = 10;
               break;
             }
 
+            removeClickListener();
             playerPlay.splice(0);
-            _context.next = 4;
+            _context.next = 5;
+            return new Promise(function (res) {
+              return setTimeout(function () {
+                return res();
+              }, 600);
+            });
+
+          case 5:
+            _context.next = 7;
             return animateCPU();
 
-          case 4:
-            clickListener();
-            _context.next = 8;
+          case 7:
+            addClickListener();
+            _context.next = 11;
             break;
 
-          case 7:
+          case 10:
             if (what === 'match') {
-              sumScore();
               playerPlay.splice(0);
               match.splice(0);
+              sumScore();
             }
 
-          case 8:
+          case 11:
           case "end":
             return _context.stop();
         }
@@ -1192,7 +1240,7 @@ var clear = /*#__PURE__*/function () {
 
 var nextRound = function nextRound() {
   var playsLeft = playerPlay < match ? true : false;
-  if (playsLeft) clickListener();else {
+  if (playsLeft) return;else {
     switch (getPlayerData().difficulty) {
       case 'normal':
         match.push(getRandom());
@@ -1215,54 +1263,67 @@ var nextRound = function nextRound() {
 
 var animateCPU = /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
-    var _iterator, _step, v;
+    var animate, _iterator, _step, v;
 
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+            animate = function animate(index) {
+              return new Promise(function (resolve) {
+                colors[index].addEventListener('transitionend', function () {
+                  colors[index].classList.remove('game__color--active');
+                  audioPlay(index);
+                  setTimeout(resolve, 300);
+                }, {
+                  once: true
+                });
+                colors[index].classList.add('game__color--active');
+              });
+            };
+
             _iterator = _createForOfIteratorHelper(match);
-            _context2.prev = 1;
+            _context2.prev = 2;
 
             _iterator.s();
 
-          case 3:
+          case 4:
             if ((_step = _iterator.n()).done) {
-              _context2.next = 9;
+              _context2.next = 10;
               break;
             }
 
             v = _step.value;
-            _context2.next = 7;
+            _context2.next = 8;
             return Promise.resolve(animate(v));
 
-          case 7:
-            _context2.next = 3;
+          case 8:
+            _context2.next = 4;
             break;
 
-          case 9:
-            _context2.next = 14;
+          case 10:
+            _context2.next = 15;
             break;
 
-          case 11:
-            _context2.prev = 11;
-            _context2.t0 = _context2["catch"](1);
+          case 12:
+            _context2.prev = 12;
+            _context2.t0 = _context2["catch"](2);
 
             _iterator.e(_context2.t0);
 
-          case 14:
-            _context2.prev = 14;
+          case 15:
+            _context2.prev = 15;
 
             _iterator.f();
 
-            return _context2.finish(14);
+            return _context2.finish(15);
 
-          case 17:
+          case 18:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[1, 11, 14, 17]]);
+    }, _callee2, null, [[2, 12, 15, 18]]);
   }));
 
   return function animateCPU() {
@@ -1270,58 +1331,14 @@ var animateCPU = /*#__PURE__*/function () {
   };
 }();
 
-var goodClick = /*#__PURE__*/function () {
-  var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(clicked) {
-    var selectedByNum, pass;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            selectedByNum = colors.indexOf(clicked);
-            playerPlay.push(selectedByNum);
-            pass = playerPlay.every(function (v, i) {
-              return v === match[i];
-            });
-
-            if (!pass) {
-              _context3.next = 9;
-              break;
-            }
-
-            _context3.next = 6;
-            return animate(selectedByNum);
-
-          case 6:
-            nextRound();
-            _context3.next = 10;
-            break;
-
-          case 9:
-            youLose();
-
-          case 10:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3);
-  }));
-
-  return function goodClick(_x2) {
-    return _ref3.apply(this, arguments);
-  };
-}();
-
-var animate = function animate(index) {
-  return new Promise(function (resolve) {
-    colors[index].addEventListener('transitionend', function () {
-      colors[index].classList.remove('game__color--active');
-      setTimeout(resolve, 200);
-    }, {
-      once: true
-    });
-    colors[index].classList.add('game__color--active');
+var goodClick = function goodClick(clicked) {
+  var selectedByNum = colors.indexOf(clicked);
+  audioPlay(selectedByNum);
+  playerPlay.push(selectedByNum);
+  var pass = playerPlay.every(function (v, i) {
+    return v === match[i];
   });
+  pass ? nextRound() : youLose();
 };
 
 var youLose = function youLose() {
@@ -1331,66 +1348,67 @@ var youLose = function youLose() {
   play();
 };
 
-var clickListener = function clickListener() {
-  var handleClick = function handleClick(e) {
-    var clicked = e.target;
+var handleClick = function handleClick(e) {
+  if (e.target.classList.contains('game__color')) {
+    goodClick(e.target);
+    colors.forEach(function (v, i) {
+      return i < 4 && v.classList.remove('game__color--player-turn');
+    });
+  }
+};
 
-    if (clicked.classList.contains('game__color')) {
-      goodClick(clicked);
-      removeClickEvent();
-    }
-  };
+var addClickListener = function addClickListener() {
+  return gameBoard.addEventListener('click', handleClick);
+};
 
-  var removeClickEvent = function removeClickEvent() {
-    return gameBoard.removeEventListener('click', handleClick);
-  };
-
-  gameBoard.addEventListener('click', handleClick);
+var removeClickListener = function removeClickListener() {
+  return gameBoard.removeEventListener('click', handleClick);
 };
 
 var start = /*#__PURE__*/function () {
-  var _ref4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
-    return _regenerator.default.wrap(function _callee4$(_context4) {
+  var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+    return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             clear('match');
-            _context4.t0 = getPlayerData().difficulty;
-            _context4.next = _context4.t0 === 'hard' ? 4 : _context4.t0 === 'maniac' ? 6 : _context4.t0 === 'normal' ? 8 : 8;
+            _context3.t0 = getPlayerData().difficulty;
+            _context3.next = _context3.t0 === 'hard' ? 4 : _context3.t0 === 'maniac' ? 6 : _context3.t0 === 'normal' ? 8 : 8;
             break;
 
           case 4:
             match.push(getRandom(), getRandom());
-            return _context4.abrupt("break", 9);
+            return _context3.abrupt("break", 9);
 
           case 6:
             match.push(getRandom(), getRandom(), getRandom());
-            return _context4.abrupt("break", 9);
+            return _context3.abrupt("break", 9);
 
           case 8:
             match.push(getRandom());
 
           case 9:
-            _context4.next = 11;
+            _context3.next = 11;
             return animateCPU();
 
           case 11:
-            clickListener();
+            addClickListener();
 
           case 12:
           case "end":
-            return _context4.stop();
+            return _context3.stop();
         }
       }
-    }, _callee4);
+    }, _callee3);
   }));
 
   return function start() {
-    return _ref4.apply(this, arguments);
+    return _ref3.apply(this, arguments);
   };
 }();
 
 var play = function play() {
+  if (!getPlayerData().difficulty) logout.click();
   form.difficulty.value = getPlayerData().difficulty;
   form.submit.textContent = 'PLAY';
   form.submit.removeAttribute('disabled');
@@ -1409,26 +1427,41 @@ var play = function play() {
     }
   };
 
-  form.addEventListener('submit', function (e) {
+  var handleSubmit = function handleSubmit(e) {
     e.preventDefault();
     form.submit.setAttribute('disabled', 'true');
     form.difficulty.forEach(function (r) {
       return r.setAttribute('disabled', 'true');
     });
     removeChangeEvent();
+    removeSubmitEvent();
     start();
-  }, {
-    once: true
-  });
+  };
+
   form.addEventListener('change', handleChange);
+  form.addEventListener('submit', handleSubmit);
 
   var removeChangeEvent = function removeChangeEvent() {
     return form.removeEventListener('change', handleChange);
   };
+
+  var removeSubmitEvent = function removeSubmitEvent() {
+    return form.removeEventListener('submit', handleSubmit);
+  };
+
+  logout.addEventListener('click', function () {
+    removeChangeEvent();
+    removeSubmitEvent();
+  });
 };
 
 var userRegister = function userRegister() {
   form.reset();
+  form.difficulty.forEach(function (r) {
+    return r.removeAttribute('disabled');
+  });
+  form.submit.textContent = 'Save';
+  form.submit.setAttribute('disabled', 'true');
   var validate = {
     name: "",
     diff: ""
@@ -1467,6 +1500,7 @@ var userRegister = function userRegister() {
     setPlayerData(validate.name, validate.diff);
     form.children[0].innerHTML = "<p class=\"form__player-name\">".concat(getPlayerData().player, "<p>");
     removeChangeEvent();
+    showLogout();
     play();
   };
 
@@ -1480,14 +1514,33 @@ var userRegister = function userRegister() {
   });
 };
 
+var clonedEl = form.children[0].cloneNode(true);
+
+var showLogout = function showLogout() {
+  logout.classList.remove('logout--disabled');
+  logout.addEventListener('click', function () {
+    sessionStorage.removeItem('simonPlayer');
+    form.children[0].replaceWith(clonedEl.cloneNode(true));
+    logout.classList.add('logout--disabled');
+    removeClickListener();
+    showRanking();
+    userRegister();
+  }, {
+    once: true
+  });
+};
+
 if (sessionStorage.getItem('simonPlayer')) {
   form.children[0].innerHTML = "<p class=\"form__player-name\">".concat(getPlayerData().player, "<p>");
+  showLogout();
   play();
 } else {
   userRegister();
-} //Mensajes al perder o la animacion al score
+}
+
+showRanking(); //Mensajes al perder o la animacion al score
 //dev dependencies parcel no está :O
-},{"@babel/runtime/regenerator":"../../../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../../../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/toConsumableArray":"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"@babel/runtime/regenerator":"../../../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../../../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/toConsumableArray":"../../../node_modules/@babel/runtime/helpers/toConsumableArray.js","../assets/*.wav":"../../assets/*.wav"}],"C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -1515,7 +1568,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49262" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53034" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -1691,5 +1744,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../../js/globals.js"], null)
-//# sourceMappingURL=/globals.8cf0bed8.js.map
+},{}]},{},["C:/Users/Antho/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../../js/main.js"], null)
+//# sourceMappingURL=/main.3cacc8be.js.map

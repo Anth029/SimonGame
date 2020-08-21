@@ -1,16 +1,38 @@
+import {A,B,C,D} from '../assets/*.wav'
 const gameBoard = document.getElementById('colors-container')
 const colors = Array.from(gameBoard.children)
 const form = document.getElementById('ingame-form')
-const table = document.getElementById('ranking-table')
 const playersList = document.getElementById('players-list')
 const match = []
 const playerPlay = []
 const getRandom = () => Math.floor(Math.random() * 4)
 const logout = document.getElementById('logout')
-logout.addEventListener('click', (e)=> {
-  sessionStorage.removeItem('simonPlayer')
-  location.reload()
-})
+const audioA = new Audio(A)
+const audioB = new Audio(B)
+const audioC = new Audio(C)
+const audioD = new Audio(D)
+
+const audioPlay = (colorClicked) => {
+  switch (colorClicked) {
+    case 0:
+      audioA.currentTime = 0
+      audioA.play()
+      break
+    case 1:
+      audioB.currentTime = 0
+      audioB.play()
+      break
+    case 2:
+      audioC.currentTime = 0
+      audioC.play()
+      break
+    case 3:
+      audioD.currentTime = 0
+      audioD.play()
+      break
+  }
+}
+
 
 const testPlayers = [
  {
@@ -18,7 +40,7 @@ const testPlayers = [
     difficulty: 'maniac',
     score: 1500,
     time: new Date('2020-07-06T12:43:09')
-  } ,
+  },
   {
     player: '_Alex_',
     difficulty: 'hard',
@@ -177,24 +199,24 @@ const showRanking = () => {
   playersList.appendChild(fragment)
 }
 
-showRanking()
-
 const clear = async (what) => {
   if (what === 'round') {
+    removeClickListener()
     playerPlay.splice(0)
+    await new Promise((res) => setTimeout(()=> res(), 600))
     await animateCPU()
-    clickListener()
+    addClickListener()
   } else if (what === 'match') {
-    sumScore()
     playerPlay.splice(0)
     match.splice(0)
+    sumScore()
   }
 }
 
 const nextRound = () => {
   const playsLeft = playerPlay < match ? true : false
 
-  if (playsLeft) clickListener()
+  if (playsLeft) return
   else {
     switch(getPlayerData().difficulty){
       case 'normal':
@@ -214,32 +236,28 @@ const nextRound = () => {
 }
 
 const animateCPU = async () => {
+  const animate = (index) => {
+    return new Promise((resolve) => {
+        colors[index].addEventListener('transitionend', ()=> {
+          colors[index].classList.remove('game__color--active')
+          audioPlay(index)
+          setTimeout(resolve, 300)
+        }, {once: true})
+      
+        colors[index].classList.add('game__color--active')
+    })
+  }
   for (const v of match) {
     await Promise.resolve(animate(v))
   }
 }
 
-const goodClick = async (clicked) => {
+const goodClick = (clicked) => {
   const selectedByNum = colors.indexOf(clicked)
+  audioPlay(selectedByNum)
   playerPlay.push(selectedByNum)
   const pass = playerPlay.every((v, i) => v === match[i])
-
-  if (pass) {
-    await animate(selectedByNum)
-    nextRound()
-  } else youLose()
-}
-
-
-const animate = (index) => {
-  return new Promise((resolve) => {
-      colors[index].addEventListener('transitionend', ()=> {
-        colors[index].classList.remove('game__color--active')
-        setTimeout(resolve, 200)
-      }, {once: true})
-    
-      colors[index].classList.add('game__color--active')
-  })
+  pass ? nextRound() : youLose()
 }
 
 const youLose = () => {
@@ -249,21 +267,15 @@ const youLose = () => {
   play()
 }
 
-
-
-const clickListener = () => {
-  const handleClick = (e) => {
-    const clicked = e.target
-    if(clicked.classList.contains('game__color')){
-      goodClick(clicked)
-      removeClickEvent()
-    }
+const handleClick = (e) => {
+  if(e.target.classList.contains('game__color')){
+    goodClick(e.target)
+    colors.forEach((v,i)=> i<4 && v.classList.remove('game__color--player-turn'))
   }
-  const removeClickEvent = () => gameBoard.removeEventListener('click', handleClick)
-  gameBoard.addEventListener('click', handleClick)  
 }
 
-
+const addClickListener = () => gameBoard.addEventListener('click', handleClick)
+const removeClickListener = () => gameBoard.removeEventListener('click', handleClick)
 
 const start = async () => {
   clear('match')
@@ -279,10 +291,11 @@ const start = async () => {
       match.push(getRandom())
   }
   await animateCPU()
-  clickListener()
+  addClickListener()
 }
 
 const play = () => {
+  if(!getPlayerData().difficulty) logout.click()
   form.difficulty.value = getPlayerData().difficulty
   form.submit.textContent = 'PLAY'
   form.submit.removeAttribute('disabled')
@@ -298,19 +311,32 @@ const play = () => {
     }
   }
 
-  form.addEventListener('submit', (e)=> {
+  const handleSubmit = (e) => {
     e.preventDefault()
     form.submit.setAttribute('disabled', 'true')
     form.difficulty.forEach(r=> r.setAttribute('disabled', 'true'))
     removeChangeEvent()
+    removeSubmitEvent()
     start()
-  }, {once: true})
+  }
+  
   form.addEventListener('change', handleChange)
+  form.addEventListener('submit', handleSubmit)
+
   const removeChangeEvent = () => form.removeEventListener('change', handleChange)
+  const removeSubmitEvent = () => form.removeEventListener('submit', handleSubmit)
+
+  logout.addEventListener('click', ()=> {
+    removeChangeEvent()
+    removeSubmitEvent()
+  })
 }
 
 const userRegister = () => {
   form.reset()
+  form.difficulty.forEach(r=> r.removeAttribute('disabled'))
+  form.submit.textContent = 'Save'
+  form.submit.setAttribute('disabled', 'true')
   const validate = {
     name: "",
     diff: ""
@@ -349,6 +375,7 @@ const userRegister = () => {
     setPlayerData(validate.name, validate.diff)
     form.children[0].innerHTML = `<p class="form__player-name">${getPlayerData().player}<p>`
     removeChangeEvent()
+    showLogout()
     play()
   }
 
@@ -357,13 +384,31 @@ const userRegister = () => {
   form.addEventListener('submit', handleSubmit, {once: true})
 }
 
+const clonedEl = form.children[0].cloneNode(true)
+
+const showLogout = () => {
+  logout.classList.remove('logout--disabled')
+  logout.addEventListener('click', ()=> {
+    sessionStorage.removeItem('simonPlayer')
+    form.children[0].replaceWith(clonedEl.cloneNode(true))
+    logout.classList.add('logout--disabled')
+    removeClickListener()
+    showRanking()
+    userRegister()
+  }, {once: true})
+}
+
 if(sessionStorage.getItem('simonPlayer')){
   form.children[0].innerHTML = 
     `<p class="form__player-name">${getPlayerData().player}<p>`
+  showLogout()
   play()
+
 }else {
   userRegister()
 }
+
+showRanking()
 
 //Mensajes al perder o la animacion al score
 //dev dependencies parcel no está :O

@@ -1,18 +1,29 @@
 .ranking {
-  // background-color: $leaderboard-bg-color;
   padding: 3px;
-  border-radius: .5em;
   color: $font-color-1;
   border-collapse: collapse;
   background-image: linear-gradient(90deg, hsla(265, 53%, 29%, 1) 0%, hsla(24, 93%, 73%, 1) 100%);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  border-radius: 10px;
 
   &__head {
-    padding: 5px 15px;
+    padding: .8em;
     font-weight: normal;
-    padding: 1em;
 
-    &--row {
-      // background-color: $leaderboard-head-color;
+    &:nth-child(2) {
+      font-weight: bold;
+    }
+    &:nth-child(4) {
+      font-weight: bold;
+    }
+
+    &:nth-last-child(1) {
+      display: none;
+      @include tablet {
+        display: table-cell;
+      }
     }
   }
 
@@ -28,8 +39,15 @@
     &:nth-child(4) {
       font-weight: bold;
       text-align: end;
+      padding-right: 1em;
     }
-    
+
+    &:nth-last-child(1){
+      display: none;
+      @include tablet {
+        display: table-cell;
+      }
+    }    
 
     &--rows {
       &:nth-child(odd) {
