@@ -20,17 +20,17 @@ var r=require("./arrayWithoutHoles"),e=require("./iterableToArray"),u=require(".
 },{"./arrayWithoutHoles":"alUq","./iterableToArray":"AZzA","./unsupportedIterableToArray":"wy3R","./nonIterableSpread":"OMtq"}],"zFmH":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.sumScore=exports.setRanking=exports.getRanking=exports.setPlayerData=exports.getPlayerData=void 0;var e=t(require("@babel/runtime/helpers/toConsumableArray"));function t(e){return e&&e.__esModule?e:{default:e}}var r=[{player:"xXJuanXx",difficulty:"maniac",score:1500,time:new Date("2020-07-06T12:43:09")},{player:"_Alex_",difficulty:"hard",score:800,time:new Date("2020-12-13T13:33:09")},{player:"Bot96",difficulty:"normal",score:500,time:new Date("2020-10-28T17:50:09")},{player:"Player123",difficulty:"hard",score:300,time:new Date("2020-01-15T22:07:09")},{player:"Vegetta777",difficulty:"maniac",score:150,time:new Date("2020-02-03T10:30:09")},{player:"Clementine",difficulty:"normal",score:100,time:new Date("2020-11-14T04:43:09")},{player:"Albedo",difficulty:"hard",score:100,time:new Date("2020-07-25T08:40:09")},{player:"Nabe",difficulty:"normal",score:50,time:new Date("2020-04-17T10:00:09")},{player:"Shalltear",difficulty:"normal",score:50,time:new Date("2020-08-01T01:09:09")},{player:"OoLeiaoO",difficulty:"normal",score:50,time:new Date("2020-01-13T04:43:09")}],a=function(){var e=sessionStorage.getItem("simonPlayer");if(e)return JSON.parse(e);var t={player:"",difficulty:"",score:0,time:""};return sessionStorage.setItem("simonPlayer",JSON.stringify(t)),t};exports.getPlayerData=a;var i=function(e,t,r){var i=a();e&&(i.player=e),t&&(i.difficulty=t),r&&(i.time=r),sessionStorage.setItem("simonPlayer",JSON.stringify(i))};exports.setPlayerData=i;var n=function(){var e=localStorage.getItem("simonRanking");if(e)return JSON.parse(e);var t=r.sort(function(e,t){return t.score-e.score});return localStorage.setItem("simonRanking",JSON.stringify(t)),t};exports.getRanking=n;var o=function(){var t=n(),r=a(),i=[].concat((0,e.default)(t),[r]).sort(function(e,t){return t.score-e.score}).slice(0,10);localStorage.setItem("simonRanking",JSON.stringify(i))};exports.setRanking=o;var s=function(e){var t=a();e?t.score+=e:t.score=0,sessionStorage.setItem("simonPlayer",JSON.stringify(t))};exports.sumScore=s;
 },{"@babel/runtime/helpers/toConsumableArray":"DRof"}],"bqO8":[function(require,module,exports) {
-module.exports="/A.d9124a4e.flac";
+module.exports="/A.flac";
 },{}],"xGg9":[function(require,module,exports) {
-module.exports="/B.c84c806a.flac";
+module.exports="/B.flac";
 },{}],"dTaB":[function(require,module,exports) {
-module.exports="/C.6bd570dc.flac";
+module.exports="/C.flac";
 },{}],"Bk54":[function(require,module,exports) {
-module.exports="/D.1843a965.flac";
+module.exports="/D.flac";
 },{}],"SThU":[function(require,module,exports) {
-module.exports="/sectionfail.982a998d.flac";
+module.exports="/sectionfail.flac";
 },{}],"K2NK":[function(require,module,exports) {
-module.exports="/sectionpass.425ba3df.flac";
+module.exports="/sectionpass.flac";
 },{}],"vWzw":[function(require,module,exports) {
 module.exports={A:require("./A.flac"),B:require("./B.flac"),C:require("./C.flac"),D:require("./D.flac"),sectionfail:require("./sectionfail.flac"),sectionpass:require("./sectionpass.flac")};
 },{"./A.flac":"bqO8","./B.flac":"xGg9","./C.flac":"dTaB","./D.flac":"Bk54","./sectionfail.flac":"SThU","./sectionpass.flac":"K2NK"}],"z01V":[function(require,module,exports) {
