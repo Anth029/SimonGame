@@ -1,4 +1,4 @@
-import { A, B, C, D, sectionpass, sectionfail } from '../assets/sound/*.flac'
+import { A, B, C, D, sectionpass, sectionfail } from '../assets/sound/*.mp3'
 
 const colorsAudio = [
   {audio: new Audio(A)},
